@@ -3,6 +3,14 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.example.androiddata">
 
+    <!-- Permissions required to access the internet and check the status of the network -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Normal permission -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- Dangerous permission -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:allowBackup="false"
             android:icon="@mipmap/ic_launcher"

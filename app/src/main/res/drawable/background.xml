@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- shapes has fill and border -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- background color -->
+    <solid android:color="#FFF"/>
+    <!-- border -->
+    <stroke android:width="3dp" android:color="#B1BCBE"/>
+    <!-- corner radius -->
+    <corners android:radius="10dp"/>
+</shape>
