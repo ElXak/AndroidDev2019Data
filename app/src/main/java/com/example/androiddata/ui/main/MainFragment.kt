@@ -2,20 +2,23 @@ package com.example.androiddata.ui.main
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androiddata.R
 import com.example.androiddata.TAG
+import com.example.androiddata.VIEW_TYPE_GRID
+import com.example.androiddata.VIEW_TYPE_LIST
 import com.example.androiddata.data.Monster
 import com.example.androiddata.ui.shared.SharedViewModel
+import com.example.androiddata.utilities.PrefsHelper
 
 // Fragment is a User Interface and is only responsible for managing the presentation
 class MainFragment : Fragment(),
@@ -29,10 +32,12 @@ class MainFragment : Fragment(),
 */
 
     // instance of viewModel, recyclerView, swipeLayout, navController
+    // with declaration here we can access it where ever we want in this class
     private lateinit var viewModel: SharedViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeLayout: SwipeRefreshLayout
     private lateinit var navController: NavController
+    private lateinit var adapter: MainRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,9 +54,19 @@ class MainFragment : Fragment(),
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
 
+        // setHasOptionsMenu(true) is not needed in Activities
+        // but in Fragment OptionsMenu doesn't work without setHasOptionsMenu(true)
+        // it makes fragment to listen OptionsMenu actions
+        setHasOptionsMenu(true)
+
         // assignment of view object for assignment of recycler object
         val view = inflater.inflate(R.layout.main_fragment, container, false)
         recyclerView = view.findViewById(R.id.recyclerView)
+        // get my layoutStyle from preferences. this code executed when fragment starts up
+        val layoutStyle = PrefsHelper.getItemType(requireContext())
+        recyclerView.layoutManager =
+                if (layoutStyle == VIEW_TYPE_GRID) GridLayoutManager(requireContext(), 2)
+                else LinearLayoutManager(requireContext())
 
         // passed requireActivity() because NavController is located in Activity rather then Fragment
         navController = Navigation.findNavController(
@@ -80,7 +95,8 @@ class MainFragment : Fragment(),
 */
             // instance of adapter, passing context, observed viewModel.monsterData
             // and Fragment itself as a listener
-            val adapter = MainRecyclerAdapter(requireContext(), it, this)
+            // adapter splited to property declaration
+            adapter = MainRecyclerAdapter(requireContext(), it, this)
             // assign adapter to the recycler
             recyclerView.adapter = adapter
 //            after receiving data hides refreshing icon on display
@@ -104,5 +120,35 @@ class MainFragment : Fragment(),
         viewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
     }
 */
+
+    // display options menu
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.options_main, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    // actions on selecting options menu
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_view_grid -> {
+                changeViewType(VIEW_TYPE_GRID)
+            }
+            R.id.action_view_list -> {
+                changeViewType(VIEW_TYPE_LIST)
+            }
+        }
+        return true
+    }
+
+    private fun changeViewType(viewType: String = VIEW_TYPE_GRID) {
+        // set preferences item type
+        PrefsHelper.setItemType(requireContext(), viewType)
+        // override recyclerView's layoutManager
+        recyclerView.layoutManager =
+            if (viewType == VIEW_TYPE_GRID) GridLayoutManager(requireContext(), 2)
+            else LinearLayoutManager(requireContext())
+        // reassigning the adapter to recyclerView
+        recyclerView.adapter = adapter
+    }
 
 }

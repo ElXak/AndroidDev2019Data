@@ -181,7 +181,7 @@ class MonsterRepository(val app: Application) {
     }
 
     private fun readDataFromCache(): List<Monster> {
-        val json =FileHelper.readTextFile(app, "monsters.json")
+        val json = FileHelper.readTextFile(app, "monsters.json")
         return if (json == null) {
             emptyList()
         } else {

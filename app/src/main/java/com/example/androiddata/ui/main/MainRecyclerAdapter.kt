@@ -10,7 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.androiddata.R
+import com.example.androiddata.VIEW_TYPE_GRID
 import com.example.androiddata.data.Monster
+import com.example.androiddata.utilities.PrefsHelper
 
 // Receives data and applies to each item in recycler view
 // Generic notation is <MainRecyclerAdapter.ViewHolder>()>.
@@ -36,7 +38,15 @@ class MainRecyclerAdapter(val context: Context,
     // creates layout view, parent is the ViewGroup at the root of the Layout
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.monster_grid_item, parent, false)
+        // find out from preferences what layout style supposed to use
+        val layoutStyle = PrefsHelper.getItemType(parent.context)
+        // if layoutStyle = VIEW_TYPE_GRID show grid layout else show list layout
+        val layoutId = if (layoutStyle == VIEW_TYPE_GRID) {
+            R.layout.monster_grid_item
+        } else {
+            R.layout.monster_list_item
+        }
+        val view = inflater.inflate(layoutId, parent, false)
         return ViewHolder(view)
     }
 
