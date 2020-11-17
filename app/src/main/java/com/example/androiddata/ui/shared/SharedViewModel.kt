@@ -3,11 +3,13 @@ package com.example.androiddata.ui.shared
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import com.example.androiddata.data.Monster
 import com.example.androiddata.data.MonsterRepository
 
 // Asks repository for data without knowing from where it comes from and passes to User Interface
-class SharedViewModel(app: Application) : AndroidViewModel(app) {
+// put val before variable name for lasting variable longer
+class SharedViewModel(val app: Application) : AndroidViewModel(app) {
 
 //    moved to Repository Class because view model doesn't need to know about data source
 //    private val listType = Types.newParameterizedType(
@@ -43,9 +45,27 @@ class SharedViewModel(app: Application) : AndroidViewModel(app) {
 
     // for passing data to layout
     val selectedMonster = MutableLiveData<Monster>()
+    val activityTitle = MutableLiveData<String>()
+
+    // calls init as the viewModel is created
+    init {
+        updateActivityTitle()
+    }
 
     fun refreshData() {
         dataRepository.refreshDataFromWeb()
+    }
+
+    // read signature from preference setting and update activityTitle MutableLiveData
+    fun updateActivityTitle() {
+        val signature =
+            // reference to preferences
+            PreferenceManager.getDefaultSharedPreferences(app)
+                // now i can retrieve any of the values by calling appropriate get function
+                // key comes from preferences xml file. "Monster fan" is default value if key not found
+                .getString("signature", "Monster fan")
+        // set LiveData activityTitle value
+        activityTitle.value = "Stickers for $signature"
     }
 
 }

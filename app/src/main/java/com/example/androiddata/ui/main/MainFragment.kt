@@ -103,6 +103,11 @@ class MainFragment : Fragment(),
             swipeLayout.isRefreshing = false
         })
 
+        viewModel.activityTitle.observe(viewLifecycleOwner, {
+            // set Activity Title to value of LiveData object
+            requireActivity().title = it
+        })
+
         return view
     }
 
@@ -136,6 +141,9 @@ class MainFragment : Fragment(),
             R.id.action_view_list -> {
                 changeViewType(VIEW_TYPE_LIST)
             }
+            R.id.action_settings -> {
+                navController.navigate(R.id.settingsActivity)
+            }
         }
         return true
     }
@@ -149,6 +157,13 @@ class MainFragment : Fragment(),
             else LinearLayoutManager(requireContext())
         // reassigning the adapter to recyclerView
         recyclerView.adapter = adapter
+    }
+
+    // one of standard lifeCycle functions for applying changes after settings changed
+    override fun onResume() {
+        super.onResume()
+        // read signature from preference setting and update activityTitle MutableLiveData
+        viewModel.updateActivityTitle()
     }
 
 }

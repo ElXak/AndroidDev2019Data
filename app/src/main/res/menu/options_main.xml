@@ -13,5 +13,9 @@
             android:title="@string/list"
             android:icon="@drawable/ic_view_list"
             app:showAsAction="ifRoom"/>
+    <item
+            android:title="@string/settings"
+            android:id="@+id/action_settings"
+            app:showAsAction="never" />
 
 </menu>

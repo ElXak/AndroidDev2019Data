@@ -25,8 +25,6 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
         // in order to get reference to ActionBar Component
         // we have to explicitly cast Activity as AppCompatActivity
         (requireActivity() as AppCompatActivity).run {
@@ -55,6 +53,7 @@ class DetailFragment : Fragment() {
 //        })
 
         // instead of classic inflating layout we will bind it
+        // Inflate the layout for this fragment
 //        return inflater.inflate(R.layout.fragment_detail, container, false)
         // in data binding architecture each layout generates a special class
         // the name of class matches to the name of layout without spaces and special characters
